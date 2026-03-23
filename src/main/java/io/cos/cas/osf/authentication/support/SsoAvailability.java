@@ -4,7 +4,7 @@ package io.cos.cas.osf.authentication.support;
  * This is {@link SsoAvailability}.
  *
  * @author Longze Chen
- * @since 26.1.1
+ * @since 26.1.0
  */
 public enum SsoAvailability {
 
@@ -32,7 +32,6 @@ public enum SsoAvailability {
         if (id == null) {
             return null;
         }
-
         for (final SsoAvailability type : SsoAvailability.values()) {
             if (id.equals(type.getId())) {
                 return type;

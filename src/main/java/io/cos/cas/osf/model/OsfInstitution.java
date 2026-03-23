@@ -42,6 +42,9 @@ public class OsfInstitution extends AbstractOsfModel {
     @Column(name = "logout_url")
     private String logoutUrl;
 
+    /**
+     * Maps to column {@code delegation_protocol} of table {@code osf_instittuion} in OSF database.
+     */
     @Column(name = "delegation_protocol")
     private String delegationProtocol;
 
@@ -61,6 +64,9 @@ public class OsfInstitution extends AbstractOsfModel {
     @Column(name = "support_email", nullable = false)
     private String supportEmail;
 
+    /**
+     * @return the institution's delegation protocol.
+     */
     public DelegationProtocol getDelegationProtocol() {
         try {
             return DelegationProtocol.getType(delegationProtocol);
@@ -70,7 +76,7 @@ public class OsfInstitution extends AbstractOsfModel {
     }
 
     /**
-     * @return the string value of the institution's SSO availability.
+     * @return the institution's SSO Availability.
      */
     public SsoAvailability getSsoAvailability() {
         try {
