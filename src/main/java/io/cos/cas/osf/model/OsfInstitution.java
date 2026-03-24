@@ -1,6 +1,7 @@
 package io.cos.cas.osf.model;
 
 import io.cos.cas.osf.authentication.support.DelegationProtocol;
+import io.cos.cas.osf.authentication.support.SsoAvailability;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,8 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 /**
- * This is {@link OsfInstitution}.
+ * This is {@link OsfInstitution}. It maps to a subset of columns in the OSF DB table {@code osf_instittuion}.
+ * This subset is required to support institution SSO for CAS and OSF.
  *
  * @author Longze Chen
  * @since 21.0.0
@@ -40,14 +42,20 @@ public class OsfInstitution extends AbstractOsfModel {
     @Column(name = "logout_url")
     private String logoutUrl;
 
+    /**
+     * Maps to column {@code delegation_protocol} of table {@code osf_instittuion} in OSF database.
+     */
     @Column(name = "delegation_protocol")
     private String delegationProtocol;
 
+    /**
+     * Maps to column {@code sso_availability} of table {@code osf_instittuion} in OSF database.
+     */
+    @Column(name = "sso_availability")
+    private String ssoAvailability;
+
     @Column(name = "is_deleted")
     private Boolean deleted;
-
-    @Column(name = "sso_in_progress")
-    private Boolean ssoInProgress;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deactivated")
@@ -56,9 +64,23 @@ public class OsfInstitution extends AbstractOsfModel {
     @Column(name = "support_email", nullable = false)
     private String supportEmail;
 
+    /**
+     * @return the institution's delegation protocol.
+     */
     public DelegationProtocol getDelegationProtocol() {
         try {
             return DelegationProtocol.getType(delegationProtocol);
+        } catch (final IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    /**
+     * @return the institution's SSO Availability.
+     */
+    public SsoAvailability getSsoAvailability() {
+        try {
+            return SsoAvailability.getType(ssoAvailability);
         } catch (final IllegalArgumentException e) {
             return null;
         }
