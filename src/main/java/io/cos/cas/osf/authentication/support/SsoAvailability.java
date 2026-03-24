@@ -40,6 +40,10 @@ public enum SsoAvailability {
         throw new IllegalArgumentException("No matching type for id " + id);
     }
 
+    public boolean isPublic () {
+        return SsoAvailability.PUBLIC.equals(this);
+    }
+
     public final String getId() {
         return id;
     }

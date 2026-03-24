@@ -52,6 +52,22 @@ public final class OsfInstitutionUtils {
         }
         final Map<String, String> institutionLoginUrlMap = new HashMap<>();
         for (final OsfInstitution institution: institutionList) {
+            final SsoAvailability ssoAvailability = institution.getSsoAvailability();
+            if (ssoAvailability == null) {
+                LOGGER.error(
+                        "Skipped due to invalid SSO Availability: [institutionId={}]",
+                        institution.getInstitutionId()
+                );
+                continue;
+            }
+            if (!ssoAvailability.isPublic()) {
+                LOGGER.debug(
+                        "Skipped because SSO Availability is not public: [institutionId={}, ssoAvailability={}]",
+                        institution.getInstitutionId(),
+                        ssoAvailability.getId()
+                );
+                continue;
+            }
             final DelegationProtocol delegationProtocol = institution.getDelegationProtocol();
             if (DelegationProtocol.SAML_SHIB.equals(delegationProtocol)) {
                 institutionLoginUrlMap.put(
