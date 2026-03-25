@@ -1,7 +1,8 @@
 package io.cos.cas.osf.authentication.support;
 
 /**
- * This is {@link SsoAvailability}.
+ * This is {@link SsoAvailability}, which is used in {@link io.cos.cas.osf.model.OsfInstitution}
+ * to map to the types/choices of its counterpart in the OSF model.
  *
  * @author Longze Chen
  * @since 26.1.0
@@ -40,6 +41,9 @@ public enum SsoAvailability {
         throw new IllegalArgumentException("No matching type for id " + id);
     }
 
+    /**
+     * @return whether the enum type is {@link SsoAvailability#PUBLIC}.
+     */
     public boolean isPublic () {
         return SsoAvailability.PUBLIC.equals(this);
     }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is {@link OsfInstitutionUtils}.
+ * This is {@link OsfInstitutionUtils}, which provides helper methods supporting the institution SSO login flow.
  *
  * @author Longze Chen
  * @since 21.0.0
@@ -54,6 +54,8 @@ public final class OsfInstitutionUtils {
         for (final OsfInstitution institution: institutionList) {
             final SsoAvailability ssoAvailability = institution.getSsoAvailability();
             if (ssoAvailability == null) {
+                // Catch a rare exception case where OSF DB has changed the choices of the field
+                // `sso_availability` in table `osf_institution` without syncing with CAS.
                 LOGGER.error(
                         "Skipped due to invalid SSO Availability: [institutionId={}]",
                         institution.getInstitutionId()
@@ -61,6 +63,7 @@ public final class OsfInstitutionUtils {
                 continue;
             }
             if (!ssoAvailability.isPublic()) {
+                // Hide institutions of which SSO Availability is not Public
                 LOGGER.debug(
                         "Skipped because SSO Availability is not public: [institutionId={}, ssoAvailability={}]",
                         institution.getInstitutionId(),
