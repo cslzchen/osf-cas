@@ -26,7 +26,9 @@ public final class OsfInstitutionUtils {
 
     public static boolean validateInstitutionForLogin(final JpaOsfDao jpaOsfDao, final String id) {
         final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
-        return institution != null && institution.getDelegationProtocol() != null && institution.getSsoAvailability() != SsoAvailability.UNAVAILABLE;
+        return institution != null
+                && institution.getDelegationProtocol() != null
+                && institution.getSsoAvailability() != SsoAvailability.UNAVAILABLE;
     }
 
     public static String getInstitutionSupportEmail(final JpaOsfDao jpaOsfDao, final String id) {
@@ -46,6 +48,7 @@ public final class OsfInstitutionUtils {
         } else {
             final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(institutionId);
             if (institution != null) {
+                // Must be a valid institution to trigger the shortcut SSO mode
                 institutionList.add(institution);
                 isShortcutSso = true;
             } else {
@@ -65,13 +68,14 @@ public final class OsfInstitutionUtils {
                 continue;
             }
             if (isShortcutSso && ssoAvailability.isHidden()) {
+                // Show institutions of hidden SSO Availability in shortcut mode
                 LOGGER.debug(
                         "Show hidden SSO availability with shortcut URL: [institutionId={}, ssoAvailability={}]",
                         institution.getInstitutionId(),
                         ssoAvailability.getId()
                 );
             } else if (!ssoAvailability.isPublic()) {
-                // Hide institutions of which SSO Availability is not Public
+                // Hide institutions of non-public SSO Availability
                 LOGGER.debug(
                         "Skip non-public SSO availability: [institutionId={}, ssoAvailability={}]",
                         institution.getInstitutionId(),
