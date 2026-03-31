@@ -37,16 +37,17 @@ public final class OsfInstitutionUtils {
     public static Map<String, String> getInstitutionLoginUrlMap(
             final JpaOsfDao jpaOsfDao,
             final String target,
-            final String institutionId,
-            boolean isShortcutSso
+            final String institutionId
     ) {
         List<OsfInstitution> institutionList = new LinkedList<>();
+        boolean isShortcutSso = false;
         if (institutionId == null || institutionId.isEmpty()) {
             institutionList = jpaOsfDao.findAllInstitutions();
         } else {
             final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(institutionId);
             if (institution != null) {
                 institutionList.add(institution);
+                isShortcutSso = true;
             } else {
                 institutionList = jpaOsfDao.findAllInstitutions();
             }
