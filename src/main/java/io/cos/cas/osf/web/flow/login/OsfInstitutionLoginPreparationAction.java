@@ -71,6 +71,7 @@ public class OsfInstitutionLoginPreparationAction extends OsfAbstractLoginPrepar
         }
 
         String institutionId = null;
+        boolean isShortcutSsoMode = false;
         OsfCasLoginContext loginContext;
         loginContext = Optional.of(context).map(requestContext
                 -> (OsfCasLoginContext) requestContext.getFlowScope().get(PARAMETER_LOGIN_CONTEXT)).orElse(null);
@@ -81,6 +82,7 @@ public class OsfInstitutionLoginPreparationAction extends OsfAbstractLoginPrepar
                 context.getFlowScope().put(PARAMETER_LOGIN_CONTEXT, loginContext);
                 institutionId = null;
             } else {
+                isShortcutSsoMode = true;
                 final String institutionSupportEmail = OsfInstitutionUtils.getInstitutionSupportEmail(jpaOsfDao, institutionId);
                 if (institutionSupportEmail != null) {
                     loginContext.setInstitutionSupportEmail(institutionSupportEmail);
@@ -89,7 +91,7 @@ public class OsfInstitutionLoginPreparationAction extends OsfAbstractLoginPrepar
         }
 
         final Map<String, String> institutionLoginUrlMap
-                = OsfInstitutionUtils.getInstitutionLoginUrlMap(jpaOsfDao, target, institutionId);
+                = OsfInstitutionUtils.getInstitutionLoginUrlMap(jpaOsfDao, target, institutionId, isShortcutSsoMode);
         final Map<String, String> institutionLoginUrlMapSorted;
         if (institutionId != null) {
             institutionLoginUrlMapSorted = institutionLoginUrlMap;

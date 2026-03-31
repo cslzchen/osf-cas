@@ -48,6 +48,10 @@ public enum SsoAvailability {
         return SsoAvailability.PUBLIC.equals(this);
     }
 
+    public boolean isHidden () {
+        return SsoAvailability.HIDDEN.equals(this);
+    }
+
     public final String getId() {
         return id;
     }
