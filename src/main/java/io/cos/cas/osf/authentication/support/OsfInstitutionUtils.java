@@ -62,7 +62,7 @@ public final class OsfInstitutionUtils {
                 // Catch a rare exception case where OSF DB has changed the choices of the field
                 // `sso_availability` in table `osf_institution` without syncing with CAS.
                 LOGGER.error(
-                        "Skip invalid SSO availability: [institutionId={}]",
+                        "Skip instn with invalid SSO avail: [instnId={}]",
                         institution.getInstitutionId()
                 );
                 continue;
@@ -70,14 +70,14 @@ public final class OsfInstitutionUtils {
             if (isShortcutSso && ssoAvailability.isHidden()) {
                 // Show institutions of hidden SSO Availability in shortcut mode
                 LOGGER.debug(
-                        "Show hidden SSO availability with shortcut URL: [institutionId={}, ssoAvailability={}]",
+                        "Show instn with hidden SSO avail in shortcut mode: [instnId={}, avail={}]",
                         institution.getInstitutionId(),
                         ssoAvailability.getId()
                 );
             } else if (!ssoAvailability.isPublic()) {
                 // Hide institutions of non-public SSO Availability
                 LOGGER.debug(
-                        "Skip non-public SSO availability: [institutionId={}, ssoAvailability={}]",
+                        "Skip instn with non-public SSO avail: [instnId={}, avail={}]",
                         institution.getInstitutionId(),
                         ssoAvailability.getId()
                 );
