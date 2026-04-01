@@ -26,7 +26,9 @@ public final class OsfInstitutionUtils {
 
     public static boolean validateInstitutionForLogin(final JpaOsfDao jpaOsfDao, final String id) {
         final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
-        return institution != null && institution.getDelegationProtocol() != null;
+        return institution != null
+                && institution.getDelegationProtocol() != null
+                && institution.getSsoAvailability() != SsoAvailability.UNAVAILABLE;
     }
 
     public static String getInstitutionSupportEmail(final JpaOsfDao jpaOsfDao, final String id) {
@@ -37,15 +39,18 @@ public final class OsfInstitutionUtils {
     public static Map<String, String> getInstitutionLoginUrlMap(
             final JpaOsfDao jpaOsfDao,
             final String target,
-            final String id
+            final String institutionId
     ) {
         List<OsfInstitution> institutionList = new LinkedList<>();
-        if (id == null || id.isEmpty()) {
+        boolean isShortcutSso = false;
+        if (institutionId == null || institutionId.isEmpty()) {
             institutionList = jpaOsfDao.findAllInstitutions();
         } else {
-            final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
+            final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(institutionId);
             if (institution != null) {
+                // Must be a valid institution to trigger the shortcut SSO mode
                 institutionList.add(institution);
+                isShortcutSso = true;
             } else {
                 institutionList = jpaOsfDao.findAllInstitutions();
             }
@@ -57,15 +62,22 @@ public final class OsfInstitutionUtils {
                 // Catch a rare exception case where OSF DB has changed the choices of the field
                 // `sso_availability` in table `osf_institution` without syncing with CAS.
                 LOGGER.error(
-                        "Skipped due to invalid SSO Availability: [institutionId={}]",
+                        "Skip instn with invalid SSO avail: [instnId={}]",
                         institution.getInstitutionId()
                 );
                 continue;
             }
-            if (!ssoAvailability.isPublic()) {
-                // Hide institutions of which SSO Availability is not Public
+            if (isShortcutSso && ssoAvailability.isHidden()) {
+                // Show institutions of hidden SSO Availability in shortcut mode
                 LOGGER.debug(
-                        "Skipped because SSO Availability is not public: [institutionId={}, ssoAvailability={}]",
+                        "Show instn with hidden SSO avail in shortcut mode: [instnId={}, avail={}]",
+                        institution.getInstitutionId(),
+                        ssoAvailability.getId()
+                );
+            } else if (!ssoAvailability.isPublic()) {
+                // Hide institutions of non-public SSO Availability
+                LOGGER.debug(
+                        "Skip instn with non-public SSO avail: [instnId={}, avail={}]",
                         institution.getInstitutionId(),
                         ssoAvailability.getId()
                 );

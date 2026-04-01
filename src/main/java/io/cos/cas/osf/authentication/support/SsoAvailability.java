@@ -48,6 +48,16 @@ public enum SsoAvailability {
         return SsoAvailability.PUBLIC.equals(this);
     }
 
+    /**
+     * @return whether the enum type is {@link SsoAvailability#HIDDEN}.
+     */
+    public boolean isHidden () {
+        return SsoAvailability.HIDDEN.equals(this);
+    }
+
+    /**
+     * @return the enum type string
+     */
     public final String getId() {
         return id;
     }
