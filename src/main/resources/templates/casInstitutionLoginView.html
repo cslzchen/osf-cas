@@ -31,6 +31,10 @@
                         </select>
                     </section>
 
+                    <section class="text-with-mdi text-danger">
+                            <p th:if="${osfCasLoginContext.institutionId}" th:utext="#{screen.institutionlogin.link.hidden}"></p>
+                    </section>
+
                     <section class="text-with-mdi">
                         <span th:if="${osfCasLoginContext.institutionId}">
                             <a th:href="@{/login(campaign=institution, institutionId=${institutionId ?: ''}, service=${service?.originalUrl ?: ''})}" th:utext="#{screen.institutionlogin.link.select}"></a>
