@@ -31,6 +31,13 @@ public final class OsfInstitutionUtils {
                 && institution.getSsoAvailability() != SsoAvailability.UNAVAILABLE;
     }
 
+    public static boolean isInstitutionSsoAvailabilityHidden(final JpaOsfDao jpaOsfDao, final String id) {
+        final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
+        return institution != null
+                && institution.getDelegationProtocol() != null
+                && institution.getSsoAvailability() == SsoAvailability.HIDDEN;
+    }
+
     public static String getInstitutionSupportEmail(final JpaOsfDao jpaOsfDao, final String id) {
         final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
         return institution != null ? institution.getSupportEmail() : null;

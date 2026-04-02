@@ -37,6 +37,8 @@ public abstract class OsfAbstractLoginPreparationAction extends AbstractAuthenti
 
     protected static final String PARAMETER_INSTITUTION_ID = "institutionId";
 
+    protected static final String PARAMETER_HIDDEN_SSO_AVAILABILITY = "hiddenSsoAvailability";
+
     protected static final String PARAMETER_ORCID_CLIENT_TYPE = "orcid";
 
     protected static final String PARAMETER_CAS_CLIENT_TYPE = "cas";

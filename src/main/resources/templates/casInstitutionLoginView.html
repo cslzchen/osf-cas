@@ -32,7 +32,7 @@
                     </section>
 
                     <section class="text-with-mdi text-danger">
-                            <p th:if="${osfCasLoginContext.institutionId}" th:utext="#{screen.institutionlogin.link.hidden}"></p>
+                            <p th:if="${osfCasLoginContext.institutionId != null AND osfCasLoginContext.hiddenSsoAvailability}" th:utext="#{screen.institutionlogin.link.hidden}"></p>
                     </section>
 
                     <section class="text-with-mdi">

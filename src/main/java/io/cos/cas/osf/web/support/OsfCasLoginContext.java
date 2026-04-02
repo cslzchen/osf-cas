@@ -30,6 +30,8 @@ public class OsfCasLoginContext implements Serializable  {
 
     private String institutionId;
 
+    private boolean hiddenSsoAvailability;
+
     private String institutionSupportEmail;
 
     private boolean unsupportedInstitutionLogin;

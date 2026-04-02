@@ -81,6 +81,9 @@ public class OsfInstitutionLoginPreparationAction extends OsfAbstractLoginPrepar
                 context.getFlowScope().put(PARAMETER_LOGIN_CONTEXT, loginContext);
                 institutionId = null;
             } else {
+                if (OsfInstitutionUtils.isInstitutionSsoAvailabilityHidden(jpaOsfDao, institutionId)) {
+                    loginContext.setHiddenSsoAvailability(true);
+                }
                 final String institutionSupportEmail = OsfInstitutionUtils.getInstitutionSupportEmail(jpaOsfDao, institutionId);
                 if (institutionSupportEmail != null) {
                     loginContext.setInstitutionSupportEmail(institutionSupportEmail);
