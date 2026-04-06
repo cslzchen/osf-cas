@@ -24,17 +24,32 @@ public final class OsfInstitutionUtils {
 
     public final static String ORCID_SUFFIX = " (via ORCiD SSO)";
 
+    /**
+     * @param institution the OSF institution to verify
+     * @return whether the given institution is eligible for institution SSO.
+     */
     public static boolean validateInstitutionForLogin(final OsfInstitution institution) {
         return institution != null
                 && institution.getDelegationProtocol() != null
                 && institution.getSsoAvailability() != SsoAvailability.UNAVAILABLE;
     }
 
-    public static String getInstitutionSupportEmail(final JpaOsfDao jpaOsfDao, final String id) {
-        final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
+    /**
+     * @param jpaOsfDao the data access object for OSF DB
+     * @param institutionId the institution ID
+     * @return the institution's support email if exists
+     */
+    public static String getInstitutionSupportEmail(final JpaOsfDao jpaOsfDao, final String institutionId) {
+        final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(institutionId);
         return institution != null ? institution.getSupportEmail() : null;
     }
 
+    /**
+     * @param jpaOsfDao the data access object for OSF DB
+     * @param target the target query param in shibboleth URL
+     * @param institutionId the institution ID used in shortcut SSO mode
+     * @return a map of institution name and login URL
+     */
     public static Map<String, String> getInstitutionLoginUrlMap(
             final JpaOsfDao jpaOsfDao,
             final String target,
@@ -100,6 +115,12 @@ public final class OsfInstitutionUtils {
         return institutionLoginUrlMap;
     }
 
+    /**
+     * A helper method that sort a map by value instead of key.
+     *
+     * @param map the map to sort by value
+     * @return the sorted map
+     */
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(final Map<K, V> map) {
         final List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
         Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
