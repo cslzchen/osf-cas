@@ -24,18 +24,10 @@ public final class OsfInstitutionUtils {
 
     public final static String ORCID_SUFFIX = " (via ORCiD SSO)";
 
-    public static boolean validateInstitutionForLogin(final JpaOsfDao jpaOsfDao, final String id) {
-        final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
+    public static boolean validateInstitutionForLogin(final OsfInstitution institution) {
         return institution != null
                 && institution.getDelegationProtocol() != null
                 && institution.getSsoAvailability() != SsoAvailability.UNAVAILABLE;
-    }
-
-    public static boolean isInstitutionSsoAvailabilityHidden(final JpaOsfDao jpaOsfDao, final String id) {
-        final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
-        return institution != null
-                && institution.getDelegationProtocol() != null
-                && institution.getSsoAvailability() == SsoAvailability.HIDDEN;
     }
 
     public static String getInstitutionSupportEmail(final JpaOsfDao jpaOsfDao, final String id) {
