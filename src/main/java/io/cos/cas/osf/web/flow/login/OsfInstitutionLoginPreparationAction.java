@@ -80,17 +80,17 @@ public class OsfInstitutionLoginPreparationAction extends OsfAbstractLoginPrepar
             final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(institutionId);
             if (!OsfInstitutionUtils.validateInstitutionForLogin(institution)) {
                 loginContext.setInstitutionId(null);
-                context.getFlowScope().put(PARAMETER_LOGIN_CONTEXT, loginContext);
                 institutionId = null;
             } else {
-                if (institution.getSsoAvailability().isHidden()) {
-                    loginContext.setHiddenSsoAvailability(true);
-                }
                 final String institutionSupportEmail = institution.getSupportEmail();
                 if (institutionSupportEmail != null) {
                     loginContext.setInstitutionSupportEmail(institutionSupportEmail);
                 }
+                if (institution.getSsoAvailability().isHidden()) {
+                    loginContext.setHiddenSsoAvailability(true);
+                }
             }
+            context.getFlowScope().put(PARAMETER_LOGIN_CONTEXT, loginContext);
         }
 
         final Map<String, String> institutionLoginUrlMap
