@@ -2,6 +2,7 @@ package io.cos.cas.osf.web.flow.login;
 
 import io.cos.cas.osf.authentication.support.OsfInstitutionUtils;
 import io.cos.cas.osf.dao.JpaOsfDao;
+import io.cos.cas.osf.model.OsfInstitution;
 import io.cos.cas.osf.web.support.OsfCasLoginContext;
 
 import lombok.extern.slf4j.Slf4j;
@@ -76,16 +77,20 @@ public class OsfInstitutionLoginPreparationAction extends OsfAbstractLoginPrepar
                 -> (OsfCasLoginContext) requestContext.getFlowScope().get(PARAMETER_LOGIN_CONTEXT)).orElse(null);
         if (loginContext != null) {
             institutionId = loginContext.getInstitutionId();
-            if (!OsfInstitutionUtils.validateInstitutionForLogin(jpaOsfDao, institutionId)) {
+            final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(institutionId);
+            if (!OsfInstitutionUtils.validateInstitutionForLogin(institution)) {
                 loginContext.setInstitutionId(null);
-                context.getFlowScope().put(PARAMETER_LOGIN_CONTEXT, loginContext);
                 institutionId = null;
             } else {
-                final String institutionSupportEmail = OsfInstitutionUtils.getInstitutionSupportEmail(jpaOsfDao, institutionId);
+                final String institutionSupportEmail = institution.getSupportEmail();
                 if (institutionSupportEmail != null) {
                     loginContext.setInstitutionSupportEmail(institutionSupportEmail);
                 }
+                if (institution.getSsoAvailability().isHidden()) {
+                    loginContext.setHiddenSsoAvailability(true);
+                }
             }
+            context.getFlowScope().put(PARAMETER_LOGIN_CONTEXT, loginContext);
         }
 
         final Map<String, String> institutionLoginUrlMap

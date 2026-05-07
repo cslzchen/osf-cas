@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is {@link OsfInstitutionUtils}.
+ * This is {@link OsfInstitutionUtils}, which provides helper methods supporting the institution SSO login flow.
  *
  * @author Longze Chen
  * @since 21.0.0
@@ -24,34 +24,79 @@ public final class OsfInstitutionUtils {
 
     public final static String ORCID_SUFFIX = " (via ORCiD SSO)";
 
-    public static boolean validateInstitutionForLogin(final JpaOsfDao jpaOsfDao, final String id) {
-        final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
-        return institution != null && institution.getDelegationProtocol() != null;
+    /**
+     * @param institution the OSF institution to verify
+     * @return whether the given institution is eligible for institution SSO.
+     */
+    public static boolean validateInstitutionForLogin(final OsfInstitution institution) {
+        return institution != null
+                && institution.getDelegationProtocol() != null
+                && institution.getSsoAvailability() != SsoAvailability.UNAVAILABLE;
     }
 
-    public static String getInstitutionSupportEmail(final JpaOsfDao jpaOsfDao, final String id) {
-        final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
+    /**
+     * @param jpaOsfDao the data access object for OSF DB
+     * @param institutionId the institution ID
+     * @return the institution's support email if exists
+     */
+    public static String getInstitutionSupportEmail(final JpaOsfDao jpaOsfDao, final String institutionId) {
+        final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(institutionId);
         return institution != null ? institution.getSupportEmail() : null;
     }
 
+    /**
+     * @param jpaOsfDao the data access object for OSF DB
+     * @param target the target query param in shibboleth URL
+     * @param institutionId the institution ID used in shortcut SSO mode
+     * @return a map of institution name and login URL
+     */
     public static Map<String, String> getInstitutionLoginUrlMap(
             final JpaOsfDao jpaOsfDao,
             final String target,
-            final String id
+            final String institutionId
     ) {
         List<OsfInstitution> institutionList = new LinkedList<>();
-        if (id == null || id.isEmpty()) {
+        boolean isShortcutSso = false;
+        if (institutionId == null || institutionId.isEmpty()) {
             institutionList = jpaOsfDao.findAllInstitutions();
         } else {
-            final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(id);
+            final OsfInstitution institution = jpaOsfDao.findOneInstitutionById(institutionId);
             if (institution != null) {
+                // Must be a valid institution to trigger the shortcut SSO mode
                 institutionList.add(institution);
+                isShortcutSso = true;
             } else {
                 institutionList = jpaOsfDao.findAllInstitutions();
             }
         }
         final Map<String, String> institutionLoginUrlMap = new HashMap<>();
         for (final OsfInstitution institution: institutionList) {
+            final SsoAvailability ssoAvailability = institution.getSsoAvailability();
+            if (ssoAvailability == null) {
+                // Catch a rare exception case where OSF DB has changed the choices of the field
+                // `sso_availability` in table `osf_institution` without syncing with CAS.
+                LOGGER.error(
+                        "Skip instn with invalid SSO avail: [instnId={}]",
+                        institution.getInstitutionId()
+                );
+                continue;
+            }
+            if (isShortcutSso && ssoAvailability.isHidden()) {
+                // Show institutions of hidden SSO Availability in shortcut mode
+                LOGGER.debug(
+                        "Show instn with hidden SSO avail in shortcut mode: [instnId={}, avail={}]",
+                        institution.getInstitutionId(),
+                        ssoAvailability.getId()
+                );
+            } else if (!ssoAvailability.isPublic()) {
+                // Hide institutions of non-public SSO Availability
+                LOGGER.debug(
+                        "Skip instn with non-public SSO avail: [instnId={}, avail={}]",
+                        institution.getInstitutionId(),
+                        ssoAvailability.getId()
+                );
+                continue;
+            }
             final DelegationProtocol delegationProtocol = institution.getDelegationProtocol();
             if (DelegationProtocol.SAML_SHIB.equals(delegationProtocol)) {
                 institutionLoginUrlMap.put(
@@ -70,6 +115,12 @@ public final class OsfInstitutionUtils {
         return institutionLoginUrlMap;
     }
 
+    /**
+     * A helper method that sort a map by value instead of key.
+     *
+     * @param map the map to sort by value
+     * @return the sorted map
+     */
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(final Map<K, V> map) {
         final List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
         Collections.sort(list, new Comparator<Map.Entry<K, V>>() {

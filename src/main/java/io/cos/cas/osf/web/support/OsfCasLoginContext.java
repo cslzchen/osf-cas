@@ -9,10 +9,8 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
- * This is {@link OsfCasLoginContext}.
- *
- * Stores OSF-specific information about the current web flow. Extends {@link Serializable} so that it can be put into
- * and retrieved from the flow context conveniently.
+ * This is {@link OsfCasLoginContext}. Stores OSF-specific information about the current web flow.
+ * Extends {@link Serializable} so that it can be put into and retrieved from the flow context conveniently.
  *
  * @author Longze Chen
  * @since 20.1.0
@@ -28,7 +26,16 @@ public class OsfCasLoginContext implements Serializable  {
 
     private boolean institutionLogin;
 
+    /**
+     * A verified institution ID. Its being present allows web flow to handle shortcut SSO mode.
+     */
     private String institutionId;
+
+    /**
+     * Indicates whether the institution with {@link this#institutionId} has hidden SSO availability,
+     * which allows web flow to handle such institutions properly in shortcut SSO mode.
+     */
+    private boolean hiddenSsoAvailability;
 
     private String institutionSupportEmail;
 
@@ -42,7 +49,6 @@ public class OsfCasLoginContext implements Serializable  {
 
     /**
      * The default service URL that uses OSF login endpoint with OSF home as destination.
-     *
      * e.g. http(s)://[OSF Domain]/login?next=[encoded version of http(s)://[OSF Domain]/]
      */
     private String defaultServiceUrl;
