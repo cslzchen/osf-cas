@@ -70,6 +70,7 @@ public class OsfDefaultLoginPreparationAction extends OsfAbstractLoginPreparatio
             loginContext = new OsfCasLoginContext(
                     institutionLogin,
                     institutionId,
+                    Boolean.FALSE,
                     StringUtils.EMPTY,
                     unsupportedInstitutionLogin,
                     orcidRedirect,
@@ -80,6 +81,7 @@ public class OsfDefaultLoginPreparationAction extends OsfAbstractLoginPreparatio
         } else {
             loginContext.setInstitutionLogin(institutionLogin);
             loginContext.setInstitutionId(institutionId);
+            loginContext.setHiddenSsoAvailability(false);
             loginContext.setInstitutionSupportEmail(StringUtils.EMPTY);
             loginContext.setUnsupportedInstitutionLogin(unsupportedInstitutionLogin);
             loginContext.setOrcidLoginUrl(orcidLoginUrl);

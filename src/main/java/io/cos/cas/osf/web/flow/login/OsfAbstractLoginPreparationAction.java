@@ -27,8 +27,6 @@ public abstract class OsfAbstractLoginPreparationAction extends AbstractAuthenti
 
     protected static final String PARAMETER_LOGIN_CONTEXT = "osfCasLoginContext";
 
-    protected static final String PARAMETER_SERVICE = "service";
-
     protected static final String PARAMETER_CAMPAIGN = "campaign";
 
     protected static final String PARAMETER_CAMPAIGN_VALUE = "institution";

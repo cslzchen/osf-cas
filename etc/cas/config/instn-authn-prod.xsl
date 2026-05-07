@@ -250,7 +250,7 @@
                         </user>
                     </xsl:when>
                     <!-- Harvard University (HARVARD) -->
-                    <xsl:when test="$idp='http://www.okta.com/exk1xrjz6q65XDb2J1d8 '">
+                    <xsl:when test="$idp='http://www.okta.com/exk1xrjz6q65XDb2J1d8'">
                         <id>harvard</id>
                         <user>
                             <username><xsl:value-of select="//attribute[@name='mail']/@value"/></username>
@@ -453,6 +453,18 @@
                             <familyName><xsl:value-of select="//attribute[@name='sn']/@value"/></familyName>
                             <givenName><xsl:value-of select="//attribute[@name='givenname']/@value"/></givenName>
                             <fullname><xsl:value-of select="//attribute[@name='displayname']/@value"/></fullname>
+                            <middleNames/>
+                            <suffix/>
+                        </user>
+                    </xsl:when>
+                    <!-- Texas A&M University (TAMU) -->
+                    <xsl:when test="$idp='urn:mace:incommon:tamu.edu'">
+                        <id>tamu</id>
+                        <user>
+                            <username><xsl:value-of select="//attribute[@name='mail']/@value"/></username>
+                            <fullname><xsl:value-of select="//attribute[@name='displayname']/@value"/></fullname>
+                            <givenName><xsl:value-of select="//attribute[@name='givenname']/@value"/></givenName>
+                            <familyName><xsl:value-of select="//attribute[@name='sn']/@value"/></familyName>
                             <middleNames/>
                             <suffix/>
                         </user>
@@ -889,6 +901,20 @@
                             <fullname><xsl:value-of select="//attribute[@name='displayname']/@value"/></fullname>
                             <familyName/>
                             <givenName/>
+                            <middleNames/>
+                            <suffix/>
+                            <departmentRaw><xsl:value-of select="//attribute[@name='department']/@value"/></departmentRaw>
+                            <eduPerson>false</eduPerson>
+                        </user>
+                    </xsl:when>
+                    <!-- Washington State University (WSU) -->
+                    <xsl:when test="$idp='http://www.okta.com/exk196cuygihbtIwD2p8'">
+                        <id>wsu</id>
+                        <user>
+                            <username><xsl:value-of select="//attribute[@name='mail']/@value"/></username>
+                            <fullname><xsl:value-of select="//attribute[@name='displayname']/@value"/></fullname>
+                            <familyName><xsl:value-of select="//attribute[@name='sn']/@value"/></familyName>
+                            <givenName><xsl:value-of select="//attribute[@name='givenname']/@value"/></givenName>
                             <middleNames/>
                             <suffix/>
                             <departmentRaw><xsl:value-of select="//attribute[@name='department']/@value"/></departmentRaw>
