@@ -2,6 +2,10 @@
 
 We follow the CalVer (https://calver.org/) versioning scheme: YY.MINOR.MICRO.
 
+26.1.0 (2026-05-07)
+===================
+
+* OSF4I In-progress SSO Project - CAS Piece
 
 25.1.1 (10-11-2025)
 ===================
